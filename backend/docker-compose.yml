@@ -1,0 +1,50 @@
+# ⚠️ DEPRECADO: Este archivo docker-compose.yml solo ejecuta el backend + base de datos
+# 
+# Para ejecutar el proyecto completo (Backend + Frontend + DB), usa el archivo 
+# docker-compose.yml en la raíz del proyecto:
+#
+#   cd ..
+#   docker-compose up -d
+#
+# Ver documentación en: ../README.md
+
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    command: >
+      sh -c "./docker/wait-for-db.sh db &&
+             alembic upgrade head &&
+             python manage.py seed &&
+             gunicorn --bind 0.0.0.0:8000 --workers 4 'app:create_app()'"
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      # Allow frontend dev server origins (override in .env as needed)
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+
+volumes:
+  pgdata:
