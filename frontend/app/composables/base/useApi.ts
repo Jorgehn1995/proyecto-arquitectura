@@ -1,6 +1,6 @@
 import type { User, Read, Access, Threshold } from "~/types/app";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "http://144.126.148.118:8000";
 
 export const useApi = () => {
   // ============================================
