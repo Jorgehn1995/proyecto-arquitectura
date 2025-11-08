@@ -34,7 +34,7 @@ services:
              python manage.py seed &&
              gunicorn --bind 0.0.0.0:8000 --workers 4 'app:create_app()'"
     ports:
-      - "8000:8000"
+      - "0.0.0.0:8000:8000"
     environment:
       DATABASE_URL: ${DATABASE_URL}
       CORS_ORIGINS: ${CORS_ORIGINS}
@@ -52,7 +52,7 @@ services:
       dockerfile: Dockerfile
     container_name: proyecto2-frontend-prod
     ports:
-      - "3000:3000"
+      - "0.0.0.0:3000:3000"
     environment:
       NUXT_PUBLIC_API_URL: ${NUXT_PUBLIC_API_URL:-http://backend:8000}
       NUXT_PUBLIC_API_URL_CLIENT: ${NUXT_PUBLIC_API_URL_CLIENT:-http://localhost:8000}

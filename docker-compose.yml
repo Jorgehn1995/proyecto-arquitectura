@@ -33,7 +33,7 @@ services:
              python manage.py seed &&
              gunicorn --bind 0.0.0.0:8000 --workers 4 'app:create_app()'"
     ports:
-      - "8000:8000"
+      - "0.0.0.0:8000:8000"
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg2://postgres:postgres@db:5432/flaskdb}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000,http://frontend:3000}
@@ -53,7 +53,7 @@ services:
       dockerfile: Dockerfile.dev
     container_name: proyecto2-frontend
     ports:
-      - "3000:3000"
+      - "0.0.0.0:3000:3000"
     environment:
       NUXT_PUBLIC_API_URL: ${NUXT_PUBLIC_API_URL:-http://backend:8000}
       # For client-side access (browser), use localhost
